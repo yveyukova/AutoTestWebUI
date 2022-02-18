@@ -3,6 +3,9 @@ package org.example;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -22,6 +25,7 @@ public class Test3 {
         options.addArguments("start-maximized");
         driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+        driver.get("https://monro24.ru");
     }
 
     @AfterEach
@@ -29,11 +33,12 @@ public class Test3 {
         driver.get("https://monro24.ru");
     }
 
-    @Test
-    void test() {
-        WebElement webElement = driver.findElement(By.xpath(" //span[text()=\"Детям\"]/parent::a"));
+    @ParameterizedTest
+    @ValueSource(strings = {"Детям", "Мужчинам", "Женщинам","Товары для дома"})
+    void test(String page) {
+        WebElement webElement = driver.findElement(By.xpath(" //span[text()=\""+page+"\"]/parent::a"));
         webElement.click();
-        Assertions.assertEquals("Поиск",driver.getTitle(),"Не та страница");
+        Assertions.assertTrue(driver.findElement(By.className("catalog-filters__clear")).getText().equals(page));
 
     }
     @AfterAll

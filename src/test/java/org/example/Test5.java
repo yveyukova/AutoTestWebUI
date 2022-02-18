@@ -15,7 +15,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.concurrent.TimeUnit;
 
-public class Test4 {
+public class Test5 {
     static WebDriver driver;
 
     @BeforeAll

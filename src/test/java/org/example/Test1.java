@@ -54,6 +54,6 @@ public class Test1 {
 
     @AfterEach
     void getPage() {
-        driver.get("https://monro24.ru");
+        driver.get("https://demoqa.com/");
     }
 }
