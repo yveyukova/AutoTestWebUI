@@ -1,14 +1,21 @@
-package org.example;
+package org.example.utils;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.By;
+import io.qameta.allure.Allure;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.*;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 
+import java.io.ByteArrayInputStream;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class DemoqaPage {
@@ -68,34 +75,42 @@ public class DemoqaPage {
         this.driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 
     }
-    public DemoqaPage getAutomationPracticeForm(){
+
+    public DemoqaPage getAutomationPracticeForm() {
         driver.get("https://demoqa.com/automation-practice-form");
         return this;
     }
-    public DemoqaPage getButtonsPage(){
+
+    public DemoqaPage getButtonsPage() {
         driver.get("https://demoqa.com/buttons");
         return this;
     }
+
     public DemoqaPage sendFirstName(CharSequence... keysToSend) {
         firstName.sendKeys(keysToSend);
         return this;
     }
+
     public DemoqaPage sendLastName(CharSequence... keysToSend) {
         lastName.sendKeys(keysToSend);
         return this;
     }
+
     public DemoqaPage sendEmail(CharSequence... keysToSend) {
         email.sendKeys(keysToSend);
         return this;
     }
+
     public DemoqaPage sendUserNumber(CharSequence... keysToSend) {
         userNumber.sendKeys(keysToSend);
         return this;
     }
+
     public DemoqaPage clickMan() {
         man.click();
         return this;
     }
+
     public DemoqaPage clickWoman() {
         woman.click();
         return this;
@@ -108,11 +123,13 @@ public class DemoqaPage {
         day.click();
         return this;
     }
+
     public DemoqaPage setHobbies() {
         hobby1.click();
         hobby2.click();
         return this;
     }
+
     public DemoqaPage sendCurrentAddress(CharSequence... keysToSend) {
         currentAddress.sendKeys(keysToSend);
         return this;
@@ -121,33 +138,56 @@ public class DemoqaPage {
     public String getResultText() {
         return resultText.getText();
     }
+
     public DemoqaPage clickSubmit() {
         submit.submit();
         return this;
     }
+
     public void quit() {
         driver.quit();
     }
 
-    public DemoqaPage clickDoubleClickBtn(){
+    public DemoqaPage clickDoubleClickBtn() {
         new Actions(driver).doubleClick(doubleClickBtn).perform();
         return this;
     }
-    public DemoqaPage clickRightClickBtn(){
+
+    public DemoqaPage clickRightClickBtn() {
         new Actions(driver).contextClick(rightClickBtn).perform();
         return this;
     }
-    public DemoqaPage clickDynamicClickBtn(){
+
+    public DemoqaPage clickDynamicClickBtn() {
         dynamicClickBtn.click();
         return this;
     }
+
     public String getDoubleClickMessage() {
         return doubleClickMessage.getText();
     }
+
     public String getRightClickMessage() {
         return rightClickMessage.getText();
     }
+
     public String getDynamicClickMessage() {
         return dynamicClickMessage.getText();
+    }
+
+    public DemoqaPage makeScreenshot() {
+        Allure.addAttachment("Screenshot" + System.currentTimeMillis() + ".png", new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
+        return this;
+    }
+
+    public void printBrowserLog() {
+        List<LogEntry> allLogRows = driver.manage().logs().get(LogType.BROWSER).getAll();
+        if (!allLogRows.isEmpty()) {
+            if (allLogRows.size() > 0) {
+                allLogRows.forEach(logEntry -> {
+                    System.out.println(logEntry.getMessage());
+                });
+            }
+        }
     }
 }
