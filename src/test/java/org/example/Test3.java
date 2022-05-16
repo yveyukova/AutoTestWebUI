@@ -1,48 +1,49 @@
 package org.example;
 
-
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-
-import java.util.concurrent.TimeUnit;
 
 public class Test3 {
-    static WebDriver driver;
-
+    static Monro24Page monro24Page;
     @BeforeAll
     static void init() {
-        WebDriverManager.chromedriver().setup();
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--incognito");
-        options.addArguments("start-maximized");
-        driver = new ChromeDriver(options);
-        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-        driver.get("https://monro24.ru");
+        monro24Page = new Monro24Page();
+        monro24Page.getRoot();
     }
 
+    @AfterAll
+    static void close() {
+        monro24Page.quit();
+    }
     @AfterEach
     void getPage() {
-        driver.get("https://monro24.ru");
+        monro24Page.getRoot();
     }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"Детям", "Мужчинам", "Женщинам","Товары для дома"})
-    void test(String page) {
-        WebElement webElement = driver.findElement(By.xpath(" //span[text()=\""+page+"\"]/parent::a"));
-        webElement.click();
-        Assertions.assertTrue(driver.findElement(By.className("catalog-filters__clear")).getText().equals(page));
-
+    @Test
+    void testChildren() {
+        Assertions.assertTrue(
+                monro24Page.clickChildrenFilter()
+                        .getCatalogFilters()
+                        .equals("Детям"));
     }
-    @AfterAll
-    static void close(){
-        driver.quit();
+    @Test
+    void testMan() {
+        Assertions.assertTrue(
+                monro24Page.clickManFilter()
+                        .getCatalogFilters()
+                        .equals("Мужчинам"));
+    }
+    @Test
+    void testWoman() {
+        Assertions.assertTrue(
+                monro24Page.clickWomanFilter()
+                        .getCatalogFilters()
+                        .equals("Женщинам"));
+    }
+    @Test
+    void testGoods() {
+        Assertions.assertTrue(
+                monro24Page.clickGoodsFilter()
+                        .getCatalogFilters()
+                        .equals("Товары для дома"));
     }
 }
